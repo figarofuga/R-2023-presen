@@ -1,0 +1,14 @@
+---
+title: "How to analysis in R"
+author: "Nozomi Niimi"
+format: revealjs
+---
+
+# 基本的な解析の方法
+
+```{r}
+# load packages
+library(tidyverse)
+library(readxl)
+```
+
