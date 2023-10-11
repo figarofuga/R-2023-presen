@@ -4,8 +4,56 @@ author: "Nozomi Niimi"
 format: revealjs
 ---
 
-# 基本的な解析の方法
+## What is R?
 
+* 統計に特化したプログラミング言語
+* Ross Ihaka, Robert Gentlemanらによって1993年に開発
+* ベースとなる言語がSだった為、Sの前に立つという意味で「R」を選んだらしい
+* Rのみだと"すごい電卓"だけど、packageを入れることによって何でもできる
+
+## Rの利点
+
+* 完全に無料！
+* 統計に特化している
+    * 最新の統計解析手法が整っている
+    * 統計解析が非常に楽になるような仕組みが整っている
+* 30年間の歴史があり、packageの遺産が多い
+    * 2021年時点で20000近く！
+
+## Rの欠点
+
+* 最初はとっつきにくい
+* Packageの質にムラがある
+    * CRANは動きは保証するけど、その中身は保証しない
+* 後方互換を考えていない
+    * Packageの動作がバージョンによって異なることがある
+
+## Rの統計のコツ
+
+* Rstudioを使う
+* 基本はインターネットで情報を探す
+    * 本だと情報が古くて動かないこともしばしば
+* 極力、自動化して楽をする
+    * 人間はコピー & ペーストだとミスをする
+
+## 本日のお話
+
+* 基本的な統計解析の流れ
+* 各々でおすすめのパッケージ
+* 最後に
+
+## 基本的な解析の方法
+
+```{mermaid}
+flowchart LR
+    A(Raw data) --> B(Prepare)
+    B --> C(Make Table 1)
+    C --> D{*data analysis*: \n  Logistic regression \n  survival analysis etc}
+    D --> E[Make tables]
+    D --> F[Visualization]
+```
+
+## データの読み込み
 ```{r}
 # load packages
 library(tidyverse)
