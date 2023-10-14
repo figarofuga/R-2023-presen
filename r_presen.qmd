@@ -40,6 +40,12 @@ format:
 * 関数の名前の前には、必ず"package名::"をつける！
     * namespaceの衝突の回避
 
+## 全員にオススメパッケージ
+
+* 何も考えず`tidyverse`
+* それ以外だと`easystats`は使いやすい
+* `ggpubr`とか`survminer`とかもオススメ(更新されないのが心配……)
+
 ## 本日のお話
 
 * 基本的な統計解析の流れ
@@ -89,6 +95,19 @@ head(dat)
     * 個人的には圧倒的に`tableone`がオススメ
 * labelを付けると楽(おまけだが)
 ## data analysis
+* 殆んどの解析は元々入っている`stats`、`survival`のみで可能
+    * パッケージ追加は不要
+* 追加するとしたら`rms`とか(splineなど)
+::: {.callout-tip}
+## Tip with Title
+結果を取り扱いしやすくするパッケージを使う事のをオススメ
+:::
+
+## data analysis: 結果まとめパッケージ
+* `finalfit`, `gtsummary`, `modelsummary`など
+* Excelに出したり、Figureに作ることまで考えるなら`easystats`の`parameters`や`broom`がオススメ
+
+
 ## Make other tables
 ## Visualization
 
