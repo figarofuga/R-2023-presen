@@ -74,7 +74,9 @@ dat <- readr::read_csv("testdata.csv", guess_max = 418)
 head(dat)
 ```
 
-## Prepare
+## Prepare 1. EDA
+
+## Prepare 2. data cleaning
 * 動きの基本は3つ
     * 列を選択する`select`
     * 新しい列を作る`mutate`
