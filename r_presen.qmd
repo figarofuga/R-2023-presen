@@ -1,7 +1,9 @@
 ---
 title: "How to analysis in R"
 author: "Nozomi Niimi"
-format: revealjs
+format:
+  revealjs:
+    smaller: true
 ---
 
 ## What is R?
@@ -35,6 +37,8 @@ format: revealjs
     * 本だと情報が古くて動かないこともしばしば
 * 極力、自動化して楽をする
     * 人間はコピー & ペーストだとミスをする
+* 関数の名前の前には、必ず"package名::"をつける！
+    * namespaceの衝突の回避
 
 ## 本日のお話
 
@@ -48,15 +52,43 @@ format: revealjs
 flowchart LR
     A(Raw data) --> B(Prepare)
     B --> C(Make Table 1)
-    C --> D{*data analysis*: \n  Logistic regression \n  survival analysis etc}
-    D --> E[Make tables]
+    C --> D{data analysis: \n  Logistic regression \n  survival analysis etc}
+    D --> E[Make other tables]
     D --> F[Visualization]
 ```
 
-## データの読み込み
+
+## Raw data
+* Dataの読み込み
+* excelかreadxlが最も多い
+* 基本は`tidyverse`の中のパッケージにおまかせ
+    * SPSS, STATAファイルも`haven`で行ける
+* guess_maxは基本大きい数字のほうが良い
+    * NAが多いデータだとデータ型を間違えることがある
+
+## Raw data 2
 ```{r}
 # load packages
-library(tidyverse)
-library(readxl)
+library(readr)
+dat <- readr::read_csv("testdata.csv", guess_max = 418)
+head(dat)
 ```
+
+## Prepare
+* 動きの基本は3つ
+    * 列を選択する`select`
+    * 新しい列を作る`mutate`
+    * 行を選択する`filter`
+* `base`の`subset()`や`data.tableの[]`を使えば上記は同時に出来る
+    * 見やすさとの兼ね合い
+
+## Make Table 1
+* `tableone`や`gtsummary`、`finalfit` etc
+    * 個人的には圧倒的に`tableone`がオススメ
+* labelを付けると楽(おまけだが)
+## data analysis
+## Make other tables
+## Visualization
+
+
 
