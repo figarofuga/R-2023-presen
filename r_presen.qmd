@@ -52,6 +52,20 @@ format:
 * 各々でおすすめのパッケージ
 * 最後に
 
+## package読み込み
+```{r}
+library(tidyverse)
+library(easystats)
+library(janitor)
+library(skimr)
+library(gtsummary)
+library(tableone)
+library(finalfit)
+library(ggpubr)
+library(survminer)
+library(ggsurvfit)
+```
+
 ## 基本的な解析の方法
 
 ```{mermaid}
@@ -74,13 +88,32 @@ flowchart LR
 
 ## Raw data 2
 ```{r}
-# load packages
-library(readr)
+#| echo: false
 dat <- readr::read_csv("testdata.csv", guess_max = 418)
 head(dat)
 ```
 
+
 ## Prepare 1. EDA
+
+* ざっとはskimrがおすすめ
+* Crosstableはjanitorやgtsummaryがおすすめ
+* 他のものとの関係性はpair plotもおすすめ
+    * 列数が多いと重い & 見にくいので注意
+
+## Prepare 1. EDA実践
+
+```{r}
+#| echo: true
+print(skimr::skim(dat1))
+
+gtsummary::tbl_cross(dat1, row = edema, col = status, percent = "row")
+
+dat1 |> 
+  dplyr::select(age, bili, chol, albumin, copper, alk.phos, ast, platelet, protime) |> 
+  GGally::ggpairs()
+```
+
 
 ## Prepare 2. data cleaning
 * 動きの基本は3つ
@@ -89,11 +122,37 @@ head(dat)
     * 行を選択する`filter`
 * `base`の`subset()`や`data.tableの[]`を使えば上記は同時に出来る
     * 見やすさとの兼ね合い
+* `select`->`mutate`->`filter`の順番がおすすめ
+## Prepare 2. 実践
+```{r}
+# ...1を除き、status 0,1のみに、最後に
+dat1 <- dat |>
+  dplyr::select(-`...1`) |> 
+  dplyr::mutate(across(c(chol, copper, alk.phos, ast, trig, platelet, protime), \(x){tidyr::replace_na(x, median(x, na.rm = TRUE))}))|>
+  dplyr::filter(status %in% c(0,1))
+```
 
 ## Make Table 1
 * `tableone`や`gtsummary`、`finalfit` etc
     * 個人的には圧倒的に`tableone`がオススメ
 * labelを付けると楽(おまけだが)
+
+## Make Table 1: 実践
+```{r}
+all_cols <- c("age", "sex", "ascites", "hepato", "spiders", "edema", "bili", "chol", "albumin", "copper", "alk.phos", "ast", "trig", "platelet", "protime", "stage")
+cat_cols <- c("sex", "ascites", "hepato", "spiders", "edema", "stage")
+cont_cols <- base::intersect(all_cols, cont_cols)
+
+tableone::CreateTableOne(vars = all_cols, 
+data = dat1, 
+factorVars = cat_cols,
+strata = "trt" ) |> 
+  print(nonnormal = cont_cols) |> 
+  tibble::as_tibble(rownames = "Variables")
+
+
+```
+
 ## data analysis
 * 殆んどの解析は元々入っている`stats`、`survival`のみで可能
     * パッケージ追加は不要
@@ -106,6 +165,13 @@ head(dat)
 ## data analysis: 結果まとめパッケージ
 * `finalfit`, `gtsummary`, `modelsummary`など
 * Excelに出したり、Figureに作ることまで考えるなら`easystats`の`parameters`や`broom`がオススメ
+
+## 例
+
+```{r}
+#| echo: true
+
+```
 
 
 ## Make other tables
