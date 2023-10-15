@@ -33,12 +33,26 @@ format:
 ## Rの統計のコツ
 
 * Rstudioを使う
+* 便利なパッケージを使う
+    * 車輪の再発明はしない
 * 基本はインターネットで情報を探す
     * 本だと情報が古くて動かないこともしばしば
 * 極力、自動化して楽をする
     * 人間はコピー & ペーストだとミスをする
 * 関数の名前の前には、必ず"package名::"をつける！
     * namespaceの衝突の回避
+
+## Package使用の注意点
+
+* 更新してされずに使えなくなるものもある
+    * `funModeling`パッケージ好きだったのに...
+* パッケージの質は玉石混交
+    * 基本統計とかの再現可能なものは大体大丈夫
+    * 統計パッケージの場合は以下を確認すると良い
+        * citationが査読付き論文か(RjournalやJSS)
+        * rOpenSciのものかどうか
+        * 企業が関わっているか(Positなど)
+        * maintainerが大学所属かどうか
 
 ## 全員にオススメパッケージ
 
@@ -105,11 +119,11 @@ head(dat)
 
 ```{r}
 #| echo: true
-print(skimr::skim(dat1))
+print(skimr::skim(dat))
 
-gtsummary::tbl_cross(dat1, row = edema, col = status, percent = "row")
+gtsummary::tbl_cross(dat, row = edema, col = status, percent = "row")
 
-dat1 |> 
+dat |> 
   dplyr::select(age, bili, chol, albumin, copper, alk.phos, ast, platelet, protime) |> 
   GGally::ggpairs()
 ```
@@ -140,15 +154,18 @@ dat1 <- dat |>
 ## Make Table 1: 実践
 ```{r}
 all_cols <- c("age", "sex", "ascites", "hepato", "spiders", "edema", "bili", "chol", "albumin", "copper", "alk.phos", "ast", "trig", "platelet", "protime", "stage")
+
 cat_cols <- c("sex", "ascites", "hepato", "spiders", "edema", "stage")
-cont_cols <- base::intersect(all_cols, cont_cols)
+
+cont_cols <- base::intersect(all_cols, cat_cols)
 
 tableone::CreateTableOne(vars = all_cols, 
 data = dat1, 
 factorVars = cat_cols,
 strata = "trt" ) |> 
   print(nonnormal = cont_cols) |> 
-  tibble::as_tibble(rownames = "Variables")
+  tibble::as_tibble(rownames = "Variables") |> 
+  dplyr::select(-test)
 
 
 ```
@@ -170,12 +187,29 @@ strata = "trt" ) |>
 
 ```{r}
 #| echo: true
+fit <- survival::coxph(Surv(time, status) ~ trt + age + sex, data = dat1)
 
+gtsummary::tbl_regression(fit, exponentiate = TRUE)
+
+finalfit::coxphmulti(.data = dat1, dependent = "Surv(time, status)", explanatory = c("trt", "age", "sex")) |> 
+  finalfit::fit2df()
+
+parameters::model_parameters(fit, exponentiate = TRUE)
 ```
 
 
 ## Make other tables
 ## Visualization
+* 地味に面倒な作業
+* 画像の大きさとdpiの調整が非常に面倒
+* 基本として、**ラスター画像**と**ベクター画像**があることを知っておく
+    * ラスター画像はいわゆる点描画、拡大するとぼやける
+        * jpeg, tiff, pngなど
+    * ベクター画像は絵の式が入っている為拡大してもぼやけない
+        * pdf, wmf, eps, svgなど
+* svg fileなどに出しておくと後々楽かもしれない
+## flowchart
+
 
 
 
