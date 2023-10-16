@@ -75,6 +75,7 @@ library(skimr)
 library(gtsummary)
 library(tableone)
 library(finalfit)
+library(rms)
 library(ggpubr)
 library(survminer)
 library(ggsurvfit)
@@ -143,7 +144,8 @@ dat |>
 dat1 <- dat |>
   dplyr::select(-`...1`) |> 
   dplyr::mutate(across(c(chol, copper, alk.phos, ast, trig, platelet, protime), \(x){tidyr::replace_na(x, median(x, na.rm = TRUE))}))|>
-  dplyr::filter(status %in% c(0,1))
+  dplyr::filter(status %in% c(0,1)) |> 
+  dplyr::filter(!is.na(trt))
 ```
 
 ## Make Table 1
@@ -174,6 +176,7 @@ strata = "trt" ) |>
 * 殆んどの解析は元々入っている`stats`、`survival`のみで可能
     * パッケージ追加は不要
 * 追加するとしたら`rms`とか(splineなど)
+* 競合リスク解析は`cmprsk`よりは`finalfit`か`tidycmprsk`がおすすめ
 ::: {.callout-tip}
 ## Tip with Title
 結果を取り扱いしやすくするパッケージを使う事のをオススメ
@@ -191,10 +194,12 @@ fit <- survival::coxph(Surv(time, status) ~ trt + age + sex, data = dat1)
 
 gtsummary::tbl_regression(fit, exponentiate = TRUE)
 
-finalfit::coxphmulti(.data = dat1, dependent = "Surv(time, status)", explanatory = c("trt", "age", "sex")) |> 
+tidyr::drop_na(dat, time, status, trt, age, sex) |> 
+  finalfit::crrmulti(.data = _, dependent = "Surv(time, status)", explanatory = c("trt", "age", "sex")) |> 
   finalfit::fit2df()
 
-parameters::model_parameters(fit, exponentiate = TRUE)
+rms::cph(Surv(time, status) ~ trt + rcs(age, 3) + sex, data = dat1) |> 
+  parameters::model_parameters(fit, exponentiate = TRUE)
 ```
 
 
@@ -209,7 +214,22 @@ parameters::model_parameters(fit, exponentiate = TRUE)
         * pdf, wmf, eps, svgなど
 * svg fileなどに出しておくと後々楽かもしれない
 ## flowchart
+```{r}
+ExclusionTable::exclusion_table(data = dat, 
+                                exclusion_criteria = c("status == 2", 
+                                 "is.na(trt)"), 
+                                labels_exclusion = c(
+                                    "Non liver death", 
+                                    "missing for treat"
+                                ))
 
 
+```
 
-
+## 結論
+* `tidyverse`+`tableone`+`gtsummary`+`ggpubr`+`broom`+`cowplot`が無難
+    * flowchartは`ExclusionTable`+`consort`
+    * forestplotは`forestplot`か`forestploter`
+    * 生存解析をするなら`finalfit`+`survminer`/`ggsurvfit`
+* 特殊な統計解析するなら`easystats`が一つあると便利
+* 癖があるけど`modelsummary`は自由度が高い
