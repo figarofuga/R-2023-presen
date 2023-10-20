@@ -11,7 +11,9 @@ format:
 * 統計に特化したプログラミング言語
 * Ross Ihaka, Robert Gentlemanらによって1993年に開発
 * ベースとなる言語がSだった為、Sの前に立つという意味で「R」を選んだらしい
-* Rのみだと"すごい電卓"だけど、packageを入れることによって何でもできる
+* Rのみだと"すごい電卓"だけど、packageを入れることによって何でもできる!!
+* CRANという団体がpackageの質を保証している
+    * 最近ではR-Universe等の他の団体も出来てきている
 
 ## Rの利点
 
@@ -20,39 +22,36 @@ format:
     * 最新の統計解析手法が整っている
     * 統計解析が非常に楽になるような仕組みが整っている
 * 30年間の歴史があり、packageの遺産が多い
-    * 2021年時点で20000近く！
+    * 2021年時点でCRAN登録数が20000近く！
+* packageの利用こそが最大の利点！
 
 ## Rの欠点
 
 * 最初はとっつきにくい
 * Packageの質にムラがある
-    * CRANは動きは保証するけど、その中身は保証しない
+    * CRANは動く事は保証するけど、その中身は保証しない
 * 後方互換を考えていない
     * Packageの動作がバージョンによって異なることがある
+        * Ex. `MatchIt`はversion 3と4で違う結果を出す
+    * PackageがRの進化に追いつかずに動作が動かない事がある
+        * Ex. `funModeling`便利だったがArchiveされてしまった
+* 適切なPackageを選んで使う事が重要！
 
-## Rの統計のコツ
-
-* Rstudioを使う
-* 便利なパッケージを使う
-    * 車輪の再発明はしない
-* 基本はインターネットで情報を探す
-    * 本だと情報が古くて動かないこともしばしば
-* 極力、自動化して楽をする
-    * 人間はコピー & ペーストだとミスをする
-* 関数の名前の前には、必ず"package名::"をつける！
-    * namespaceの衝突の回避
-
-## Package使用の注意点
+## Package使用の注意点とコツ
 
 * 更新してされずに使えなくなるものもある
     * `funModeling`パッケージ好きだったのに...
 * パッケージの質は玉石混交
-    * 基本統計とかの再現可能なものは大体大丈夫
+    * 基礎統計とかの再現可能なものは大体大丈夫
     * 統計パッケージの場合は以下を確認すると良い
         * citationが査読付き論文か(RjournalやJSS)
         * rOpenSciのものかどうか
-        * 企業が関わっているか(Positなど)
+        * 企業が関わっているか(Posit社など)
         * maintainerが大学所属かどうか
+* 上手く解析が出来るまでパッケージやRのVersionは変更しない
+    * `renv`を使うか`utils::sessionInfo()`のデータを何処かに残しておこう
+* 関数の名前の前には、必ず"package名::"をつける！
+    * namespaceの衝突の回避
 
 ## 全員にオススメパッケージ
 
@@ -179,7 +178,7 @@ strata = "trt" ) |>
 * 競合リスク解析は`cmprsk`よりは`finalfit`か`tidycmprsk`がおすすめ
 ::: {.callout-tip}
 ## Tip with Title
-結果を取り扱いしやすくするパッケージを使う事のをオススメ
+**結果を取り扱いしやすくするパッケージを使う事のをオススメ**
 :::
 
 ## data analysis: 結果まとめパッケージ
@@ -194,12 +193,14 @@ fit <- survival::coxph(Surv(time, status) ~ trt + age + sex, data = dat1)
 
 gtsummary::tbl_regression(fit, exponentiate = TRUE)
 
+parameters::model_parameters(fit, exponentiate = TRUE)
+
 tidyr::drop_na(dat, time, status, trt, age, sex) |> 
   finalfit::crrmulti(.data = _, dependent = "Surv(time, status)", explanatory = c("trt", "age", "sex")) |> 
   finalfit::fit2df()
 
 rms::cph(Surv(time, status) ~ trt + rcs(age, 3) + sex, data = dat1) |> 
-  parameters::model_parameters(fit, exponentiate = TRUE)
+  modelsummary::modelsummary(exponentiate = TRUE, output = "markdown")
 ```
 
 
@@ -214,15 +215,25 @@ rms::cph(Surv(time, status) ~ trt + rcs(age, 3) + sex, data = dat1) |>
         * pdf, wmf, eps, svgなど
 * svg fileなどに出しておくと後々楽かもしれない
 ## flowchart
+
+* `consort` packageか`Gmisc`がおすすめ
+    * `consort`で`grviz`形式で作るのが良い
+* ぶっちゃけ、Rで作るのが大変過ぎて普通にdraw.ioとかPPTXとかで作ったほうが楽
+* ただし、データが変わったり除外基準が追加になったりするのでやり方は知っておいても良い
+
+## flowchart実践
 ```{r}
-ExclusionTable::exclusion_table(data = dat, 
+extab <- ExclusionTable::exclusion_table(data = dat, 
                                 exclusion_criteria = c("status == 2", 
                                  "is.na(trt)"), 
                                 labels_exclusion = c(
-                                    "Non liver death", 
-                                    "missing for treat"
+                                    "non_liver_death", 
+                                    "missing_for_treat"
                                 ))
 
+ex_list <- base::split(extab$table_ex, f = extab$table_ex$exclusion) 
+
+consort::add_box(txt = )
 
 ```
 
