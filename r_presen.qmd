@@ -259,22 +259,22 @@ ex_list <- base::split(extab$table_ex, f = 1:nrow(extab$table_ex)) |> stats::set
 flowchart <- consort::add_box(txt = paste0("All cohort: n = ", ex_list$non_liver_death$n_prior)) |> 
   consort::add_side_box(txt = paste0("Excluded: n = ", ex_list$TOTAL$n_excluded,"\n\u2022 Non liver death: n = ", ex_list$non_liver_death$n_excluded, "\n\u2022 Missing for treatment: n = ", ex_list$missing_for_treat$n_excluded)) |> 
   consort::add_box(txt = paste0("Analytic cohort: n = ", ex_list$TOTAL$n_post)) |> 
-  consort::add_split(txt = c(paste0("Treatment: n = ", nrow(base::subset(dat1, subset = trt == 1))), paste0("Placebo: n = ", nrow(base::subset(dat1, subset = trt == 0)))))
+  consort::add_split(txt = c(paste0("Treatment: n = ", nrow(base::subset(dat1, subset = trt == 2))), paste0("Placebo: n = ", nrow(base::subset(dat1, subset = trt == 1)))))
 plot(flowchart, grViz = TRUE)
 
-# plot(flowchart, grViz = TRUE) |> 
-#     DiagrammeRsvg::export_svg() |> 
-#     charToRaw() |> 
-#     rsvg::rsvg_pdf("flowchart.pdf")
-
-# plot(flowchart, grViz = TRUE) |> 
-#     DiagrammeRsvg::export_svg() |> 
-#     charToRaw() |> 
-#     rsvg::rsvg_svg("flowchart.svg")
-
-# magick::image_read_svg("flowchart.svg") |> 
-#   magick::image_convert(format = "tiff") |> 
-#   magick::image_write("flowchart.tiff", compression = 'lzw', density = 900)
+#  plot(flowchart, grViz = TRUE) |>
+#      DiagrammeRsvg::export_svg() |>
+#      charToRaw() |>
+#      rsvg::rsvg_pdf("flowchart.pdf")
+#  
+#  plot(flowchart, grViz = TRUE) |>
+#      DiagrammeRsvg::export_svg() |>
+#      charToRaw() |>
+#      rsvg::rsvg_svg("flowchart.svg")
+# 
+# magick::image_read_svg("flowchart.svg", width = 7200) |>
+#    magick::image_convert(format = "tiff") |>
+#    magick::image_write("flowchart.tiff", compression = 'lzw', density = 900)
 
 ```
 
