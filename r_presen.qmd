@@ -150,7 +150,8 @@ dat |>
 # ...1を除き、status 0,1のみに、最後に
 dat1 <- dat |>
   dplyr::select(-`...1`) |> 
-  dplyr::mutate(across(c(chol, copper, alk.phos, ast, trig, platelet, protime), \(x){tidyr::replace_na(x, median(x, na.rm = TRUE))}))|>
+  dplyr::mutate(across(c(chol, copper, alk.phos, ast, trig, platelet, protime), \(x){tidyr::replace_na(x, median(x, na.rm = TRUE))}), 
+                trt = as.character(trt))|>
   dplyr::filter(status %in% c(0,1)) |> 
   dplyr::filter(!is.na(trt))
 ```
@@ -275,6 +276,30 @@ plot(flowchart, grViz = TRUE)
 # magick::image_read_svg("flowchart.svg", width = 7200) |>
 #    magick::image_convert(format = "tiff") |>
 #    magick::image_write("flowchart.tiff", compression = 'lzw', density = 900)
+
+```
+## Other figures
+
+* ggplot2が最近の潮流
+  * 細かい調整が圧倒的にしやすい
+* とはいえbase plotに比べて通常のplotが面倒
+* 単純に書くときは`ggpubr`か`ggblanket`を使いたいところ
+* Figureの組み合わせは`cowplot`がおすすめ
+
+## Other figures 実践
+
+```{r}
+
+ggpubr::ggscatterhist(dat1, x = "albumin", 
+                      y = "protime",  
+                      margin.plot = "histogram", 
+                      add = "reg.line",  
+                      color = "black", 
+                      shape = 21, size = 3,
+                      add.params = list(color = "blue", fill = "lightgray"), 
+                      conf.int = TRUE, 
+                      cor.coef = TRUE
+                      )
 
 ```
 
