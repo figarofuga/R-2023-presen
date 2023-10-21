@@ -1,6 +1,8 @@
 ---
 title: "How to analysis in R"
 author: "Nozomi Niimi"
+execute:
+  echo: true
 format:
   revealjs:
     smaller: true
@@ -78,6 +80,9 @@ library(rms)
 library(ggpubr)
 library(survminer)
 library(ggsurvfit)
+library(magick)
+library(rsvg)
+library(DiagrammeRsvg)
 ```
 
 ## 基本的な解析の方法
@@ -137,6 +142,7 @@ dat |>
 * `base`の`subset()`や`data.tableの[]`を使えば上記は同時に出来る
     * 見やすさとの兼ね合い
 * `select`->`mutate`->`filter`の順番がおすすめ
+
 ## Prepare 2. 実践
 ```{r}
 # ...1を除き、status 0,1のみに、最後に
@@ -176,6 +182,7 @@ strata = "trt" ) |>
     * パッケージ追加は不要
 * 追加するとしたら`rms`とか(splineなど)
 * 競合リスク解析は`cmprsk`よりは`finalfit`か`tidycmprsk`がおすすめ
+
 ::: {.callout-tip}
 ## Tip with Title
 **結果を取り扱いしやすくするパッケージを使う事のをオススメ**
@@ -206,6 +213,7 @@ rms::cph(Surv(time, status) ~ trt + rcs(age, 3) + sex, data = dat1) |>
 
 
 ## Make other tables
+
 ## Visualization
 * 地味に面倒な作業
 * 画像の大きさとdpiの調整が非常に面倒
@@ -262,4 +270,4 @@ plot(flowchart, grViz = TRUE)
     * forestplotは`forestplot`か`forestploter`
     * 生存解析をするなら`finalfit`+`survminer`/`ggsurvfit`
 * 特殊な統計解析するなら`easystats`が一つあると便利
-* 癖があるけど`modelsummary`は自由度が高い
+
