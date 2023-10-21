@@ -7,8 +7,20 @@
 	"features": {
 		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
 		"ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-			"packages": "skimr,palmerpenguins,ExclusionTable,collapse,tableone,gtsummary,finalfit,Hmisc,rms,ggsurvfit,survminer,tidycmprsk,easystats,ggblanket,ggpubr,Gmisc,consort,DiagrammeR,DiagrammeRsvg,svglite,rsvg,forestplot,forestploter,patchwork,cowplot,openxlsx2,flextable,officer"
-		}
+			"packages": "janitor,skimr,palmerpenguins,ExclusionTable,collapse,tableone,gtsummary,finalfit,modelsummary,Hmisc,rms,ggsurvfit,survminer,tidycmprsk,easystats,ggblanket,ggpubr,Gmisc,consort,DiagrammeR,DiagrammeRsvg,svglite,rsvg,forestplot,forestploter,patchwork,cowplot,openxlsx2,flextable,officer,magick,pdftools"
+		}, 
+		"ghcr.io/rocker-org/devcontainer-features/rstudio-server": {}
+	}, 
+	"postAttachCommand": {
+        "rstudio-start": "rserver"
+    },
+    "forwardPorts": [
+        8787
+    ],
+    "portsAttributes": {
+        "8787": {
+            "label": "RStudio IDE"
+        }
 	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
