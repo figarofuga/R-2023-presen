@@ -302,6 +302,28 @@ ggpubr::ggscatterhist(dat1, x = "albumin",
                       )
 
 ```
+## kaplan meier曲線
+
+* 通常のplotやrmsのsurvplotでもなんとかなるが、ggplotベースが自由度が高い
+* `survminer`か`ggsurvfit`がおすすめ！
+
+## Kaplan meier曲線実践
+
+```{r}
+kmfit <- survival::survfit(Surv(time, status) ~ trt, data = dat1)
+
+survminer::ggsurvplot(fit = kmfit, data = dat1, fun = "event", pval = TRUE, risk.table = TRUE, ggtheme = theme_survminer(base_size = 8), tables.theme = theme_cleantable(base_size = 8))
+
+ggsurvfit::survfit2(Surv(time, status) ~ trt, data = dat1) |> 
+  ggsurvfit(type = "risk") + 
+  add_censor_mark() + 
+  add_risktable(
+    risktable_stats = "{n.risk} ({cum.event})", 
+    stats_label = "At Risk (Cum. Events)"
+  )
+
+```
+
 
 ## 結論
 
