@@ -324,6 +324,18 @@ ggsurvfit::survfit2(Surv(time, status) ~ trt, data = dat1) |>
 
 ```
 
+```{r}
+iris2 <- iris |> 
+  dplyr::mutate(time = seq(from = lubridate::ymd("2012-1-1"), 
+                           to = lubridate::ymd("2012-5-29"), 
+                           by = "day"))
+
+par(mar = c(5, 4, 4, 4), 
+    xpd = TRUE)
+plot(iris2$time, iris2$Sepal.Width)
+rect(xleft = lubridate::ymd("2012-1-1"), xright = lubridate::ymd("2012-3-1"), ybottom = 4.5, ytop = 6, col = "red")
+
+```
 
 ## 結論
 
