@@ -17,6 +17,14 @@ format:
 -   CRANという団体がpackageの質を保証している
     -   最近ではR-Universe等の他の団体も出来てきている
 
+## Rのインストール方法
+
+-   https://cran.r-project.org
+-   上記サイトから自分のPCにあったRをダウンロードする
+-   Windowsだとユーザー名が日本語だとバグるかも・・・・・・
+-   ついでにそのままRstudioを使おう！
+    -   https://posit.co/download/rstudio-desktop/
+
 ## Rの利点
 
 -   完全に無料！
@@ -278,13 +286,14 @@ plot(flowchart, grViz = TRUE)
 #    magick::image_write("flowchart.tiff", compression = 'lzw', density = 900)
 
 ```
+
 ## Other figures
 
-* ggplot2が最近の潮流
-  * 細かい調整が圧倒的にしやすい
-* とはいえbase plotに比べて通常のplotが面倒
-* 単純に書くときは`ggpubr`か`ggblanket`を使いたいところ
-* Figureの組み合わせは`cowplot`がおすすめ
+-   ggplot2が最近の潮流
+    -   細かい調整が圧倒的にしやすい
+-   とはいえbase plotに比べて通常のplotが面倒
+-   単純に書くときは`ggpubr`か`ggblanket`を使いたいところ
+-   Figureの組み合わせは`cowplot`がおすすめ
 
 ## Other figures 実践
 
@@ -302,10 +311,11 @@ ggpubr::ggscatterhist(dat1, x = "albumin",
                       )
 
 ```
+
 ## kaplan meier曲線
 
-* 通常のplotやrmsのsurvplotでもなんとかなるが、ggplotベースが自由度が高い
-* `survminer`か`ggsurvfit`がおすすめ！
+-   通常のplotやrmsのsurvplotでもなんとかなるが、ggplotベースが自由度が高い
+-   `survminer`か`ggsurvfit`がおすすめ！
 
 ## Kaplan meier曲線実践
 
