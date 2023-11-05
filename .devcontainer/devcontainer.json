@@ -3,11 +3,11 @@
 {
 	"name": "R (rocker/r-ver base)",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "ghcr.io/rocker-org/devcontainer/tidyverse:4.3",
+	"image": "ghcr.io/rocker-org/devcontainer/tidyverse:4.2",
 	"features": {
 		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
 		"ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-			"packages": "here,easystats,cowplot"
+			"packages": "here,skimr,janitor,ExclusionTable,easystats,ggpubr,ggblanket,survminer,ggsurvfit,cowplot,tidycmprsk,finalfit,tableone,gtsummary,modelsummary,rms,Hmisc,consort,DiagrammeR,DiagrammeRsvg,rsvg,svglite,magick,ggdist,blandr,ggh4x"
 		}, 
 		"ghcr.io/rocker-org/devcontainer-features/rstudio-server": {}
 	}, 
