@@ -31,19 +31,28 @@ fit <- lmer(pressure ~ valve + measure_device + valve*measure_device + (1|Patien
 
 valve_pval <- as.data.frame(parameters::model_parameters(fit)) |> 
   base::subset(subset = Parameter == "valveSapien", select = "p") |> 
-  as.numeric()
+  as.numeric() %>%  sprintf(fmt = "%.2f", .)
 
 # make figure -------------------------------------------------------------
 
-fig <- ggpubr::ggboxplot(long_dat, x = "valve_device_fct", 
-                  y = "pressure", fill = "valve_device_fct") + 
-  scale_y_continuous(limits = c(0, 35)) +
-  ggpubr::stat_compare_means(
-    aes(label = paste0("p = ", after_stat(p.format))), 
-    comparisons = list(c("Sapien_catheter", "Sapien_echo"),
-                       c("Navitor_catheter", "Navitor_echo")),
-    method = "t.test", paired = TRUE, label.y = 30)
+# fig <- ggpubr::ggboxplot(long_dat, x = "valve_device_fct", 
+#                   y = "pressure", fill = "valve_device_fct") + 
+#   scale_y_continuous(limits = c(0, 35)) +
+#   ggpubr::stat_compare_means(
+#     aes(label = paste0("p = ", after_stat(p.format))), 
+#     comparisons = list(c("Sapien_catheter", "Sapien_echo"),
+#                        c("Navitor_catheter", "Navitor_echo")),
+#     method = "t.test", paired = TRUE, label.y = 30)
 
+fig <- ggpubr::ggboxplot(long_dat, x = "valve", 
+                         y = "pressure", fill = "measure_device") + 
+  scale_y_continuous(limits = c(0, 40)) +
+  ggpubr::geom_pwc(aes(group = measure_device), 
+    method = "t_test",  
+    method.args = list(paired = TRUE),
+    label =  "p = {p.format}", 
+    y.position = 28) + 
+  annotate("text", x = 1.5, y = 40, label = paste0("p for valve type = ", valve_pval)) 
 
 
 # fig2 <- ggpubr::ggboxplot(long_dat, x = "measure_device", 
