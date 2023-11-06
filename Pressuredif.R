@@ -2,6 +2,7 @@ library(tidyverse)
 library(readxl)
 library(here)
 library(ggplot2)
+library(ggpubr)
 library(lme4)
 library(parameters)
 
@@ -34,12 +35,14 @@ valve_pval <- as.data.frame(parameters::model_parameters(fit)) |>
 
 # make figure -------------------------------------------------------------
 
-
-
 fig <- ggpubr::ggboxplot(long_dat, x = "valve_device_fct", 
                   y = "pressure", fill = "valve_device_fct") + 
   scale_y_continuous(limits = c(0, 35)) +
-  ggpubr::stat_compare_means(label.y = 32)
+  ggpubr::stat_compare_means(
+    aes(label = paste0("p = ", after_stat(p.format))), 
+    comparisons = list(c("Sapien_catheter", "Sapien_echo"),
+                       c("Navitor_catheter", "Navitor_echo")),
+    method = "t.test", paired = TRUE, label.y = 30)
 
 
 
