@@ -27,7 +27,10 @@ long_dat <- tidyr::pivot_longer(prepped_dat,
 # LMM model ---------------------------------------------------------------
 
 fit <- lmer(pressure ~ valve + measure_device + valve*measure_device + (1|PatientIdOld), data = long_dat)
-parameters::model_parameters(fit)
+
+valve_pval <- as.data.frame(parameters::model_parameters(fit)) |> 
+  base::subset(subset = Parameter == "valveSapien", select = "p") |> 
+  as.numeric()
 
 # make figure -------------------------------------------------------------
 
